@@ -4,7 +4,8 @@ import os
 
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationEntityMemory
+from langchain.memory.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
 
 load_dotenv()
 
@@ -15,21 +16,22 @@ def main():
     else:
         print("OPENAI_API_KEY is set")
 
-    llm = ChatOpenAI()
+    llm = ChatOpenAI(model_name='gpt-4')
     conversation = ConversationChain(
         llm=llm,
-        memory=ConversationBufferMemory(),
-        verbose=True
+        memory=ConversationEntityMemory(llm=llm,),
+        # verbose=True,
+        prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
     )
 
-    print("Hello, I am a helpful CLI assistant. How can I help you?")
+    print("GPT-4 CLI Go!")
 
     while True:
         user_input = input("> ")
 
         ai_response = conversation.predict(input=user_input)
 
-        print("\nAssistant:\n " + ai_response + "\n")
+        print("\n\nAI:\n " + ai_response + "\n")
 
 
 if __name__ == '__main__':
